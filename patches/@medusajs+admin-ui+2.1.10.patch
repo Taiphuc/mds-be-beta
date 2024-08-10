@@ -1,0 +1,176 @@
+diff --git a/node_modules/@medusajs/admin-ui/ui/src/components/organisms/product-media-section/media-modal.tsx b/node_modules/@medusajs/admin-ui/ui/src/components/organisms/product-media-section/media-modal.tsx
+index c150962..5dc9a77 100644
+--- a/node_modules/@medusajs/admin-ui/ui/src/components/organisms/product-media-section/media-modal.tsx
++++ b/node_modules/@medusajs/admin-ui/ui/src/components/organisms/product-media-section/media-modal.tsx
+@@ -17,7 +17,7 @@ type Props = {
+   onClose: () => void
+ }
+ 
+-type MediaFormWrapper = {
++export type MediaFormWrapper = {
+   media: MediaFormType
+ }
+ 
+@@ -49,7 +49,8 @@ const MediaModal = ({ product, open, onClose }: Props) => {
+     let preppedImages: FormImage[] = []
+ 
+     try {
+-      preppedImages = await prepareImages(data.media.images)
++      const defaultValues = getDefaultValues(product)
++      preppedImages = await prepareImages(data.media.images, defaultValues)
+     } catch (error) {
+       let errorMessage = t(
+         "product-media-section-upload-images-error",
+diff --git a/node_modules/@medusajs/admin-ui/ui/src/components/organisms/product-variants-section/index.tsx b/node_modules/@medusajs/admin-ui/ui/src/components/organisms/product-variants-section/index.tsx
+index ff85508..9b2f268 100644
+--- a/node_modules/@medusajs/admin-ui/ui/src/components/organisms/product-variants-section/index.tsx
++++ b/node_modules/@medusajs/admin-ui/ui/src/components/organisms/product-variants-section/index.tsx
+@@ -40,6 +40,13 @@ const ProductVariantsSection = ({ product }: Props) => {
+       }
+     | undefined
+   >(undefined)
++  const [colorOptionToEdit, setColorOptionToEdit] = useState<
++    | {
++        base: ProductVariant
++        isDuplicate: boolean
++      }
++    | undefined
++  >(undefined)
+ 
+   const [variantInventoryToEdit, setVariantInventoryToEdit] = useState<
+     { base: ProductVariant } | undefined
+@@ -63,6 +70,12 @@ const ProductVariantsSection = ({ product }: Props) => {
+     toggle: toggleEditVariants,
+   } = useToggleState()
+ 
++  const {
++    state: editVariantColorState,
++    close: closeEditVariantColor,
++    toggle: toggleEditVariantColor,
++  } = useToggleState()
++
+   const {
+     state: showEditPrices,
+     close: hideEditPrices,
+@@ -116,6 +129,9 @@ const ProductVariantsSection = ({ product }: Props) => {
+   const handleEditVariant = (variant: ProductVariant) => {
+     setVariantToEdit({ base: variant, isDuplicate: false })
+   }
++  const handleEditVariantColorOption = (variant: ProductVariant) => {
++    setVariantToEdit({ base: variant, isDuplicate: false })
++  }
+ 
+   const handleDuplicateVariant = (variant: ProductVariant) => {
+     // @ts-ignore
+@@ -144,6 +160,7 @@ const ProductVariantsSection = ({ product }: Props) => {
+               updateVariant: handleEditVariant,
+               duplicateVariant: handleDuplicateVariant,
+               updateVariantInventory: handleEditVariantInventory,
++              editVariantColorOption: handleEditVariantColorOption
+             }}
+           />
+         </div>
+@@ -163,6 +180,11 @@ const ProductVariantsSection = ({ product }: Props) => {
+         onClose={closeEditVariants}
+         product={product}
+       />
++      <EditVariantsModal
++        open={editVariantColorState}
++        onClose={closeEditVariantColor}
++        product={product}
++      />
+       {showEditPrices && <Index close={hideEditPrices} product={product} />}
+       {variantToEdit && (
+         <EditVariantModal
+diff --git a/node_modules/@medusajs/admin-ui/ui/src/components/organisms/product-variants-section/table.tsx b/node_modules/@medusajs/admin-ui/ui/src/components/organisms/product-variants-section/table.tsx
+index 02820ee..861befa 100644
+--- a/node_modules/@medusajs/admin-ui/ui/src/components/organisms/product-variants-section/table.tsx
++++ b/node_modules/@medusajs/admin-ui/ui/src/components/organisms/product-variants-section/table.tsx
+@@ -19,6 +19,7 @@ type Props = {
+     duplicateVariant: (variant: ProductVariant) => void
+     updateVariant: (variant: ProductVariant) => void
+     updateVariantInventory: (variant: ProductVariant) => void
++    editVariantColorOption: (variant: ProductVariant) => void
+   }
+ }
+ 
+@@ -111,6 +112,7 @@ const VariantsTable = ({ variants, actions }: Props) => {
+     updateVariant,
+     duplicateVariant,
+     updateVariantInventory,
++    editVariantColorOption
+   } = actions
+ 
+   const getTableRowActionables = (variant: ProductVariant) => {
+@@ -145,6 +147,13 @@ const VariantsTable = ({ variants, actions }: Props) => {
+           }),
+         icon: <DuplicateIcon size="20" />,
+       },
++      // {
++      //   label: 'Update color options',
++      //   onClick: () =>
++      //     // @ts-ignore
++      //     editVariantColorOption(variant),
++      //   icon: <EditIcon size="20" />,
++      // },
+       {
+         label: t(
+           "product-variants-section-delete-variant-label",
+diff --git a/node_modules/@medusajs/admin-ui/ui/src/services/api.js b/node_modules/@medusajs/admin-ui/ui/src/services/api.js
+index faa6dfb..c8b8ad2 100644
+--- a/node_modules/@medusajs/admin-ui/ui/src/services/api.js
++++ b/node_modules/@medusajs/admin-ui/ui/src/services/api.js
+@@ -617,6 +617,12 @@ export default {
+ 
+       return medusaRequest("POST", "/admin/uploads", formData)
+     },
++    delete(key) {
++      const path = `/admin/uploads`
++      return medusaRequest("DELETE", path, {
++        file_key: key
++      })
++    },
+   },
+ 
+   draftOrders: {
+diff --git a/node_modules/@medusajs/admin-ui/ui/src/utils/images.ts b/node_modules/@medusajs/admin-ui/ui/src/utils/images.ts
+index 0763523..0055c8f 100644
+--- a/node_modules/@medusajs/admin-ui/ui/src/utils/images.ts
++++ b/node_modules/@medusajs/admin-ui/ui/src/utils/images.ts
+@@ -1,5 +1,7 @@
+ import Medusa from "../services/api"
+ import { FormImage } from "../types/shared"
++import { MediaFormWrapper } from "../components/organisms/product-media-section/media-modal"
++import path from "path"
+ 
+ const splitImages = (
+   images: FormImage[]
+@@ -18,9 +20,20 @@ const splitImages = (
+   return { uploadImages, existingImages }
+ }
+ 
+-export const prepareImages = async (images: FormImage[]) => {
+-  const { uploadImages, existingImages } = splitImages(images)
++const getImageKey = (url:string)=>{
++
++}
+ 
++export const prepareImages = async (images: FormImage[], defaultValue:MediaFormWrapper ) => {
++  const { uploadImages, existingImages } = splitImages(images)
++  let deletedImages = defaultValue?.media?.images?.filter(image=> images.findIndex(find=> find.url === image.url) === -1)
++  if(deletedImages.length > 0){
++    const deletedKeys = deletedImages?.map(image => {
++      const url = image.url?.split("/")
++      return url[url.length - 1]
++    });
++    await Promise.allSettled(deletedKeys.map(key=> Medusa.uploads.delete(key)))
++  }
+   let uploadedImgs: FormImage[] = []
+   if (uploadImages.length > 0) {
+     const files = uploadImages.map((i) => i.nativeFile)
+@@ -31,3 +44,5 @@ export const prepareImages = async (images: FormImage[]) => {
+ 
+   return [...existingImages, ...uploadedImgs]
+ }
++
++

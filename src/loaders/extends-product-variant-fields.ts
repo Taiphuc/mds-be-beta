@@ -1,0 +1,35 @@
+export default async function () {
+  const adminVariantsImports = (await import(
+    '@medusajs/medusa/dist/api/routes/admin/variants/index'
+  )) as any;
+
+  const storeVariantsImports = (await import(
+      '@medusajs/medusa/dist/api/routes/store/variants/index'
+  )) as any;
+
+  adminVariantsImports.defaultAdminVariantRelations = [
+    ...adminVariantsImports.defaultAdminVariantRelations,
+    'images',
+  ];
+
+  adminVariantsImports.defaultAdminVariantFields = [
+    ...adminVariantsImports.defaultAdminVariantFields,
+    'soldCount',
+  ];
+
+
+  storeVariantsImports.defaultStoreVariantRelations = [
+    ...storeVariantsImports.defaultStoreVariantRelations,
+    'images',
+  ];
+
+  storeVariantsImports.allowedStoreVariantRelations = [
+    ...storeVariantsImports.allowedStoreVariantRelations,
+    'images',
+  ];
+
+  storeVariantsImports.defaultStoreVariantFields = [
+    ...storeVariantsImports.defaultStoreVariantFields,
+    'soldCount',
+  ];
+}

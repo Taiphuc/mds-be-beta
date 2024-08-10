@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handlebars Test</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
+          rel="stylesheet">
+    <style>
+        body {
+            font-family: Jost, sans-serif !important;
+        }
+    </style>
+</head>
+<body>
+<div style="width: 100%; max-width: 420px; margin: auto" id="order-summary"></div>
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 420px; margin: auto;">
+    <tr>
+        <td style="padding: 20px; text-align: center;">
+            <a href="https://demo.vincoleggings.com" target="_blank" style="text-decoration: none;">
+                <img src="https://demo.vincoleggings.com/_next/image?url=https%3A%2F%2Fapi.vincoleggings.com%2Fuploads%2FVinComerces.png&w=3840&q=75"
+                     alt="" style="height: 40px; width: auto;">
+                <h1 style="margin: 0; color: #000000;">Vinco Solution</h1>
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 20px; text-align: center;">
+            <p>Order ID {{id}}</p>
+            <p>We're getting your order ready to be shipped. We will notify you when it has been sent.</p>
+            <p style="font-size: 20px;">Thank you for your purchase!</p>
+            <a href="https://demo.vincoleggings.com/order/details/{{id}}" target="_blank"
+               style="display: inline-block; line-height: 54px; text-align: center; height: 54px; width: 160px; background-color: rgb(25, 144, 198); color: white; border-radius: 4px; text-decoration: none; cursor: pointer;">
+                View your order
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 20px;">
+            <p style="font-size: 24px;">Order summary</p>
+            {{#each items}}
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid #ccc;">
+                    <tr>
+                        <td style="padding: 10px; width: 80px;">
+                            <img src="{{thumbnail}}" alt="" style="max-width: 80px; border-radius: 16px;">
+                        </td>
+                        <td style="padding: 10px;">
+                            <p>{{description}} × {{quantity}}</p>
+                        </td>
+                        <td style="padding: 10px; text-align: right;">
+                            <p>${{total}}</p>
+                        </td>
+                    </tr>
+                </table>
+            {{/each}}
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 20px;">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td style="padding: 5px 0;">Subtotal:</td>
+                    <td style="padding: 5px 0; text-align: right;">${{subtotal}}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 5px 0;">Order discount:</td>
+                    <td style="padding: 5px 0; text-align: right;">${{discount_total}}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 5px 0;">Taxes:</td>
+                    <td style="padding: 5px 0; text-align: right;">${{tax_total}}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 16px 0 5px 0; border-top: 1px solid #ccc;">Total:</td>
+                    <td style="padding: 16px 0 5px 0; text-align: right; border-top: 1px solid #ccc;">${{total}} USD</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 20px;">
+            <h3>Customer information</h3>
+            <p style="font-size: 16px">Shipping address</p>
+            <p style="font-size: 14px">{{shipping_address.first_name}} {{shipping_address.last_name}}</p>
+            <p style="font-size: 14px">{{shipping_address.address_1}}</p>
+            <p style="font-size: 14px">{{shipping_address.address_2}}</p>
+            <p style="font-size: 14px">{{shipping_address.city}} {{shipping_address.postal_code}}</p>
+            <p style="font-size: 14px">{{shipping_address.country_code}}</p>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 20px; font-style: italic; font-size: 16px;">
+            <p>If you have any questions, reply to this email or contact us at {{contactEmail}}</p>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

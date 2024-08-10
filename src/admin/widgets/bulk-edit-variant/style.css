@@ -1,0 +1,61 @@
+.ant-table-custom .ant-table-cell.ant-table-cell-with-append {
+    display: flex;
+    align-items: center;
+}
+
+:where(.css-dev-only-do-not-override-dkbvqv).ant-btn-primary {
+    background-color: #1677ff !important;
+}
+
+:where(.css-dev-only-do-not-override-dkbvqv).ant-btn-primary:not(:disabled):not(.ant-btn-disabled):hover {
+    background: #4096ff;
+}
+
+.overflow-modal {
+    overflow: auto;
+}
+
+.overflow-modal::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+}
+
+.overflow-modal::-webkit-scrollbar-thumb {
+    border-radius: 20px;
+    border: none;
+}
+
+.ant-table-content::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+}
+
+.ant-table-content::-webkit-scrollbar-thumb {
+    border-radius: 20px;
+    border: none;
+}
+
+.ant-table-cell.ant-table-cell-fix-left.ant-table-cell-fix-left-last {
+    display: block;
+    height: 65px;
+    width: 350px;
+}
+
+.deleted {
+    opacity: 0.7;
+}
+
+.fixed-labels .ant-descriptions-item-label {
+    width: 300px;
+    display: block;
+}
+
+.table-bulk-delete * {
+    padding: 0 !important
+}
+
+.table-bulk-delete:where(.css-dev-only-do-not-override-dkbvqv).ant-table-wrapper .ant-table-filter-trigger {
+    margin-right: 12px;
+    margin-block: 0;
+    margin-inline: 0;
+}

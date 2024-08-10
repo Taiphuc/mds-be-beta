@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Contact</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 600px;
+            margin: auto;
+        }
+        .header {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .info {
+            margin-bottom: 10px;
+        }
+        .info strong {
+            display: inline-block;
+            width: 120px;
+        }
+        .message {
+            margin-top: 20px;
+        }
+        .message p {
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">Customer Contact Detail</div>
+    <div class="info">
+        <strong>Name:</strong> {{name}}
+    </div>
+    <div class="info">
+        <strong>Email:</strong> {{email}}
+    </div>
+    <div class="info">
+        <strong>Phone Number:</strong> {{phone}}
+    </div>
+    <div class="message">
+        <strong>Message:</strong>
+        <p>{{message}}</p>
+    </div>
+</div>
+</body>
+</html>
